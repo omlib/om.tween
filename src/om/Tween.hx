@@ -1,6 +1,5 @@
 package om;
 
-import js.Browser.window;
 import om.tween.Interpolation;
 import om.easing.Linear;
 
