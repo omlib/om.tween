@@ -1,7 +1,7 @@
 -js app.js
 -main App
 -cp ../../src
--cp ../../../om-core/src
+-cp ../../../om.core/src
 -debug
 -dce full
 -D analyzer
