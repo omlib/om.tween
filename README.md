@@ -1,4 +1,4 @@
 
-# Om.tween
+# OM|TWEEN
 
 ![EasingGraphs](easing-graphs.png)

@@ -1,0 +1,9 @@
+--no-output
+-neko x
+-xml haxedoc.xml
+-cp src
+-cp ../om.core/src
+-D doc-gen
+--macro include('om.Tween')
+--macro include('om.easing')
+--macro include('om.tween')
