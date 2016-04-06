@@ -39,7 +39,7 @@ class Tween {
 	////////////////////////////////////////////////////////////////////////////
 
 	public var isPlaying(default,null) = false;
-	public var duration(default,null) : Float;
+	public var duration(default,null) : Null<Float>;
 	public var object(default,null) : Dynamic;
 
 	var _valuesStart : Dynamic = {};
