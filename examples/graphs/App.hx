@@ -3,6 +3,8 @@ import js.Browser.document;
 import js.Browser.window;
 import js.html.DivElement;
 import js.html.SpanElement;
+import js.html.CanvasElement;
+import js.html.CanvasRenderingContext2D;
 import om.Tween;
 import om.easing.*;
 
@@ -19,21 +21,33 @@ class App {
 
             var easeClasses : Array<Class<Dynamic>> = [Back,Bounce,Circular,Cubic,Elastic,Exponential,Quadratic,Quartic,Quintic,Sinusoidal];
             var easeTypes = ['In','Out','InOut'];
+            var graphs = new Array<Graph>();
+
             for( easeClass in easeClasses ) {
-                var element = document.createDivElement();
-                element.classList.add( 'group' );
-                var easeClassName = Type.getClassName( easeClass );
-                var easeName = easeClassName.substr( easeClassName.lastIndexOf('.')+1 );
+
+                var e = document.createDivElement();
+                e.classList.add( 'group' );
+                document.body.appendChild( e );
+
+                var cName = Type.getClassName( easeClass );
+                var name = cName.substr( cName.lastIndexOf('.')+1 );
                 for( easeType in easeTypes ) {
                     if( Reflect.hasField( easeClass, easeType ) ) {
-                        var graph = new Graph( easeClass, easeName, easeType );
-                        element.appendChild( graph.element );
+                        var g = new Graph( easeClass, name, easeType, 200, 100, 3000 );
+                        graphs.push( g );
+                        e.appendChild( g.element );
+                        g.tween();
                     }
                 }
-                document.body.appendChild( element );
             }
 
             window.requestAnimationFrame( update );
+
+            /*
+            document.body.onclick = function(){
+                for( g in graphs ) g.tween();
+            }
+            */
         }
     }
 }
@@ -42,12 +56,23 @@ private class Graph {
 
     public var element(default,null) : DivElement;
 
-    public function new( easeClass : Class<Dynamic>, easeName : String, easeType : String) {
+    var canvas : CanvasElement;
+    var context : CanvasRenderingContext2D;
+    var easeClass : Class<Dynamic>;
+    var easeType : String;
+    var drawDuration : Int;
+    var tweenX : Tween;
+    var tweenY : Tween;
 
-        var width = 200;
-        var height = 100;
-        var halfHeight = Std.int(height/2);
-        var drawDuration = 500;
+    public function new( easeClass : Class<Dynamic>, easeName : String, easeType : String, width : Int, height : Int, drawDuration = 3000 ) {
+
+        this.easeClass = easeClass;
+        this.easeType = easeType;
+        this.drawDuration = drawDuration;
+
+        var ratio = window.devicePixelRatio;
+        width = Std.int( width * ratio );
+        height = Std.int( height * ratio );
 
         element = document.createDivElement();
         element.classList.add( 'graph' );
@@ -57,41 +82,67 @@ private class Graph {
 		title.textContent = '$easeName.$easeType';
 		element.appendChild( title );
 
-        var canvas = document.createCanvasElement();
+        canvas = document.createCanvasElement();
         canvas.width = width;
-		canvas.height = height;
-        canvas.style.width = width+'px';
-        canvas.style.height =  height+'px';
+        canvas.height = height;
+
+        context = canvas.getContext2d();
+        context.strokeStyle = '#002B36';
+        context.lineWidth = 1;
         element.appendChild( canvas );
 
-        var ctx = canvas.getContext2d();
+        if( ratio > 1 ) {
+            var oldWidth = canvas.width;
+            var oldHeight = canvas.height;
+            canvas.width = Std.int( oldWidth * ratio );
+            canvas.height = Std.int( oldHeight * ratio );
+            canvas.style.width = oldWidth + 'px';
+            canvas.style.height = oldHeight + 'px';
+            canvas.getContext2d().scale( ratio, ratio );
+        } else {
+            canvas.style.width = width+'px';
+            canvas.style.height =  height+'px';
+        }
+    }
 
-		ctx.strokeStyle = '#002B36';
-        ctx.lineWidth = 1;
-		ctx.beginPath();
-		ctx.moveTo( 0, halfHeight );
-		ctx.lineTo( width, halfHeight );
-		ctx.closePath();
-		ctx.stroke();
+    public function tween() {
 
+        var halfHeight = Std.int( canvas.height / 2 );
         var yIndent = 12;
-		var position = { x:0, y:halfHeight };
-		var position_old = { x:0, y:halfHeight };
-		var easing = Reflect.field( easeClass, easeType );
+        var easing = Reflect.field( easeClass, easeType );
+		var pos = { x: 0, y: halfHeight };
+		var pos_old = { x: 0, y: halfHeight };
 
-        ctx.strokeStyle = '#fff';
+        context.clearRect( 0, 0, canvas.width, canvas.height );
 
-        new Tween( position ).to( { x:width }, drawDuration ).easing( Linear.None ).start();
-		new Tween( position ).to( { y: Std.int(width/2)-yIndent }, drawDuration ).easing( easing )
-            .onUpdate(function(){
-    			ctx.beginPath();
-    			ctx.moveTo( position_old.x, position_old.y );
-    			ctx.lineTo( position.x, position.y );
-    			ctx.closePath();
-    			ctx.stroke();
-    			position_old.x = position.x;
-    			position_old.y = position.y;
+        context.beginPath();
+        context.strokeStyle = '#002B36';
+        context.moveTo( 0, halfHeight );
+        context.lineTo( canvas.width, halfHeight );
+        context.stroke();
+        context.closePath();
 
-    		}).start();
+        context.strokeStyle = '#D33682';
+
+        if( tweenX != null && tweenX.isPlaying ) tweenX.stop();
+        if( tweenY != null && tweenY.isPlaying ) tweenY.stop();
+
+        tweenX = new Tween( pos )
+            .to( { x: canvas.width }, drawDuration )
+            .easing( Linear.None )
+            .start();
+
+		tweenY = new Tween( pos )
+            .to( { y: Std.int(canvas.width/2)-yIndent }, drawDuration )
+            .easing( easing )
+            .onUpdate( function(){
+    			context.beginPath();
+    			context.moveTo( pos_old.x, pos_old.y );
+    			context.lineTo( pos.x, pos.y );
+                context.stroke();
+    			context.closePath();
+    			pos_old.x = pos.x;
+    			pos_old.y = pos.y;
+            }).start();
     }
 }
