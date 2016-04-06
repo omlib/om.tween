@@ -1,7 +1,7 @@
 
-# OM|TWEEN
+# OM|TWEEN [![Build Status](https://travis-ci.org/tong/om.tween.svg?branch=master)](https://travis-ci.org/tong/om.tween)
 
-Simple tweening library.
+Simple tween engine.
 
 
 ## Usage
