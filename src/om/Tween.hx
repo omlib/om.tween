@@ -1,5 +1,6 @@
 package om;
 
+import om.Time;
 import om.tween.Interpolation;
 import om.easing.Linear;
 
@@ -7,15 +8,16 @@ class Tween {
 
 	static var list = new Array<Tween>();
 
-	public static inline function add( tween : Tween ) list.push( tween );
+	public static inline function add( tween : Tween )
+		list.push( tween );
+
+	public static inline function getAll() : Array<Tween>
+		return list;
 
 	public static function remove( tween : Tween ) {
 		var i = list.indexOf( tween );
 		if( i != -1 ) list.splice( i, 1 );
 	}
-
-	public static inline function getAll() : Array<Tween>
-		return list;
 
 	public static inline function removeAll()
 		list = new Array<Tween>();
@@ -183,7 +185,7 @@ class Tween {
 		var value = _easingFunction( elapsed );
 		for( property in Reflect.fields( _valuesEnd ) ) {
 			//var property = Reflect.field( f, _valuesEnd );
-			var start = Reflect.field( _valuesStart, property );
+			var start : Null<Int> = Reflect.field( _valuesStart, property );
 			if( start == null ) start = 0;
 			var end = Reflect.field( _valuesEnd, property );
 			if( Std.is( end, Array ) ) {
