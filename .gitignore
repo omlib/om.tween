@@ -1,5 +1,7 @@
 _*
 examples/*/*.js*
-TODO.md
-test/unit.js
+doc/
+test/build/
+test/unit.*
 haxedoc.xml
+TODO.md
