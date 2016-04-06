@@ -1,6 +1,6 @@
 package om;
 
-import om.Time;
+import om.Time.now;
 import om.tween.Interpolation;
 import om.easing.Linear;
 
@@ -16,7 +16,10 @@ class Tween {
 
 	public static function remove( tween : Tween ) {
 		var i = list.indexOf( tween );
-		if( i != -1 ) list.splice( i, 1 );
+		return if( i != -1 ) {
+			list.splice( i, 1 );
+			true;
+		} else false;
 	}
 
 	public static inline function removeAll()
@@ -26,20 +29,20 @@ class Tween {
 		if( list.length == 0 )
 			return false;
 		var i = 0;
-		while( i < list.length ) {
-			if( list[i].update( time ) ) {
-				i++;
-			} else {
-				list.splice( i, 1 );
-			}
-		}
+		while( i < list.length )
+			list[i].update( time ) ? i++ : list.splice( i, 1 );
 		return true;
 	}
 
 	////////////////////////////////////////////////////////////////////////////
 
+	/** */
 	public var isPlaying(default,null) = false;
+
+	/** */
 	public var duration(default,null) : Null<Float>;
+
+	/** */
 	public var object(default,null) : Dynamic;
 
 	var _valuesStart : Dynamic = {};
@@ -65,55 +68,65 @@ class Tween {
 		this.object = object;
 	}
 
-	public function to( properties : Dynamic, duration = 1000.0 ) : Tween {
-		this.duration = duration;
-		_valuesEnd = properties;
-		return this;
-	}
-
-	public function start( ?time : Float ) : Tween {
+	public function start( time = 0.0 ) : Tween {
 
 		Tween.add( this );
 
 		isPlaying = true;
 		_onStartCallbackFired = false;
 
-		_startTime = (time != null) ? time : Time.now();
-		_startTime += _delayTime;
+		//_startTime = (time != null) ? time : now();
+		_startTime = time + _delayTime;
+		//_startTime += _delayTime;
 
-		for( property in Reflect.fields( _valuesEnd ) ) {
-			if( Std.is( Reflect.field( _valuesEnd, property ), Array ) ) {
-				if( Reflect.field( _valuesEnd, property ).length == 0 )
-					continue;
-				Reflect.setField( _valuesEnd, property, [ Reflect.field( object, property ) ].concat( Reflect.field( _valuesEnd, property ) ) );
+		for( prop in Reflect.fields( _valuesEnd ) ) {
+
+			if( Std.is( Reflect.field( _valuesEnd, prop ), Array ) ) {
+				trace("AAAAAAAAAAAAAAAAAAAAAAAAAARrray");
 			}
-			Reflect.setField( _valuesStart, property, Reflect.field( object, property ) );
-			if( !Std.is( Reflect.field( _valuesStart, property ), Array ) )
-				Reflect.setField( _valuesStart, property, Reflect.field( _valuesStart, property ) * 1.0 );
-			var v = Reflect.field( _valuesStart, property );
-			Reflect.setField( _valuesStartRepeat, property, (v != null) ? v : 0 );
+
+			Reflect.setField( _valuesStart, prop, Reflect.field( object, prop ) );
+
+		//	if( !Std.is( Reflect.field( _valuesStart, prop ), Array ) )
+			Reflect.setField( _valuesStart, prop, Reflect.field( _valuesStart, prop ) * 1.0 );
+
+			var v = Reflect.field( _valuesStart, prop );
+			Reflect.setField( _valuesStartRepeat, prop, (v != null) ? v : 0.0 );
+
+			/*
+			if( Std.is( Reflect.field( _valuesEnd, prop ), Array ) ) {
+				if( Reflect.field( _valuesEnd, prop ).length == 0 )
+					continue;
+				Reflect.setField( _valuesEnd, prop, [ Reflect.field( object, prop ) ].concat( Reflect.field( _valuesEnd, prop ) ) );
+			}
+			Reflect.setField( _valuesStart, prop, Reflect.field( object, prop ) );
+			if( !Std.is( Reflect.field( _valuesStart, prop ), Array ) )
+				Reflect.setField( _valuesStart, prop, Reflect.field( _valuesStart, prop ) * 1.0 );
+			var v = Reflect.field( _valuesStart, prop );
+			Reflect.setField( _valuesStartRepeat, prop, (v != null) ? v : 0 );
+			*/
 		}
 
 		return this;
 	}
 
 	public function stop() : Tween {
-
 		if( !isPlaying )
 			return this;
-
 		Tween.remove( this );
 		isPlaying = false;
 		if( _onStopCallback != null ) _onStopCallback();
-
-		stopChainedTweens();
-
-		return this;
+		return stopChainedTweens();
 	}
 
 	public function stopChainedTweens() : Tween {
-		for( t in _chainedTweens )
-			t.stop();
+		for( t in _chainedTweens ) t.stop();
+		return this;
+	}
+
+	public function to( props : Dynamic, duration = 1000.0 ) : Tween {
+		_valuesEnd = props;
+		this.duration = duration;
 		return this;
 	}
 
@@ -132,8 +145,8 @@ class Tween {
 		return this;
 	}
 
-	public function easing( easing : Dynamic ) : Tween {
-		_easingFunction = easing;
+	public function easing( f : Dynamic ) : Tween {
+		_easingFunction = f;
 		return this;
 	}
 
@@ -147,23 +160,23 @@ class Tween {
 		return this;
 	}
 
-	public function onStart( callback : Void->Void ) : Tween {
-		_onStartCallback = callback;
+	public function onStart( f : Void->Void ) : Tween {
+		_onStartCallback = f;
 		return this;
 	}
 
-	public function onUpdate( callback : Void->Void ) : Tween {
-		_onUpdateCallback = callback;
+	public function onUpdate( f : Void->Void ) : Tween {
+		_onUpdateCallback = f;
 		return this;
 	}
 
-	public function onComplete( callback : Void->Void ) : Tween {
-		_onCompleteCallback = callback;
+	public function onComplete( f : Void->Void ) : Tween {
+		_onCompleteCallback = f;
 		return this;
 	}
 
-	public function onStop( callback : Void->Void ) : Tween {
-		_onStopCallback = callback;
+	public function onStop( f : Void->Void ) : Tween {
+		_onStopCallback = f;
 		return this;
 	}
 
@@ -182,22 +195,27 @@ class Tween {
 
 		var elapsed = ( time - _startTime ) / duration;
 		elapsed = elapsed > 1 ? 1 : elapsed;
+
 		var value = _easingFunction( elapsed );
-		for( property in Reflect.fields( _valuesEnd ) ) {
-			//var property = Reflect.field( f, _valuesEnd );
-			var start : Null<Int> = Reflect.field( _valuesStart, property );
+
+		for( f in Reflect.fields( _valuesEnd ) ) {
+			//var f = Reflect.field( f, _valuesEnd );
+			var start : Null<Int> = Reflect.field( _valuesStart, f );
 			if( start == null ) start = 0;
-			var end = Reflect.field( _valuesEnd, property );
+			var end = Reflect.field( _valuesEnd, f );
+			Reflect.setField( object, f, start + (end - start) * value );
+			/*
 			if( Std.is( end, Array ) ) {
-				Reflect.setField( object, property, _interpolationFunction( end, value ) );
+				Reflect.setField( object, f, _interpolationFunction( end, value ) );
 			} else {
 				if( Std.is( end, String ) ) {
-					untyped end = start + parseFloat( end, 10 );
+					end = start + Std.parseFloat( end );
 				}
 				if( Std.is( end, Float ) ) {
-					untyped Reflect.setField( object, property, start + ( end - start ) * value );
+					untyped Reflect.setField( object, f, start + ( end - start ) * value );
 				}
 			}
+			*/
 		}
 
 		if( _onUpdateCallback != null ) {
@@ -206,21 +224,24 @@ class Tween {
 
 		if( elapsed == 1 ) {
 			if( _repeat > 0 ) {
-				if( untyped isFinite( _repeat ) ) {
+				if( Math.isFinite( _repeat ) ) {
 					_repeat--;
 				}
-				for( property in Reflect.fields( _valuesStartRepeat ) ) {
-					if( Std.is( Reflect.field( _valuesEnd, property ), String ) ) {
-						untyped _valuesStartRepeat[ property ] = _valuesStartRepeat[ property ] + parseFloat(_valuesEnd[ property ], 10);
+				for( prop in Reflect.fields( _valuesStartRepeat ) ) {
+
+					/*
+					if( Std.is( Reflect.field( _valuesEnd, prop ), String ) ) {
+						untyped _valuesStartRepeat[ prop ] = _valuesStartRepeat[ prop ] + Std.parseFloat( _valuesEnd[ prop ] );
 					}
+					*/
 					if( _yoyo ) {
-						var tmp = Reflect.field( _valuesStartRepeat, property );
-						Reflect.setField( _valuesStartRepeat, property, Reflect.field( _valuesEnd, property ) );
-						Reflect.setField( _valuesEnd, property, tmp );
-						//_valuesStartRepeat[ property ] = _valuesEnd[ property ];
-						//_valuesEnd[ property ] = tmp;
+						var tmp = Reflect.field( _valuesStartRepeat, prop );
+						Reflect.setField( _valuesStartRepeat, prop, Reflect.field( _valuesEnd, prop ) );
+						Reflect.setField( _valuesEnd, prop, tmp );
+						//_valuesStartRepeat[ prop ] = _valuesEnd[ prop ];
+						//_valuesEnd[ prop ] = tmp;
 					}
-					Reflect.setField( _valuesStart, property, Reflect.field( _valuesEnd, property ) );
+					Reflect.setField( _valuesStart, prop, Reflect.field( _valuesEnd, prop ) );
 				}
 				if( _yoyo ) {
 					_reversed = !_reversed;
@@ -229,11 +250,10 @@ class Tween {
 				return true;
 			} else {
 				isPlaying = false;
-				if ( _onCompleteCallback != null ) {
+				if( _onCompleteCallback != null ) {
 					_onCompleteCallback();
 				}
-				for( tween in _chainedTweens )
-					tween.start( time );
+				for( t in _chainedTweens ) t.start( time );
 				return false;
 			}
 		}
