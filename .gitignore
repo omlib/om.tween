@@ -1,4 +1,5 @@
 _*
+examples/*/bin/
 examples/*/*.js*
 doc/
 test/build/
