@@ -10,8 +10,9 @@ haxe:
   - "3.2.1"
   - development
 
-install:
-    - git https://github.com/tong/om.core.git ../
+before_script:
+  - cd ..
+  - git clone https://github.com/tong/om.core.git
 
 script:
     - haxe --cwd examples/bars/ build.hxml
