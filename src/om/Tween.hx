@@ -16,10 +16,10 @@ class Tween {
 
 	public static function remove( tween : Tween ) {
 		var i = list.indexOf( tween );
-		return if( i != -1 ) {
+		return if( i == -1 ) false else {
 			list.splice( i, 1 );
 			true;
-		} else false;
+		}
 	}
 
 	public static inline function removeAll()
@@ -56,7 +56,7 @@ class Tween {
 	var _startTime = 0.0;
 	var _easingFunction = Linear.None;
 	var _interpolationFunction = Interpolation.linear;
-	var _chainedTweens = new Array<Dynamic>();
+	var _chainedTweens = new Array<Tween>();
 
 	var _onStartCallback : Void->Void;
 	var _onStartCallbackFired = false;
@@ -75,9 +75,7 @@ class Tween {
 		isPlaying = true;
 		_onStartCallbackFired = false;
 
-		//_startTime = (time != null) ? time : now();
 		_startTime = time + _delayTime;
-		//_startTime += _delayTime;
 
 		for( prop in Reflect.fields( _valuesEnd ) ) {
 
