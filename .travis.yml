@@ -9,7 +9,7 @@ haxe:
   - development
 
 script:
-    haxe --cwd examples/bars/ build.hxml
-    haxe --cwd examples/black_and_red/ build.hxml
-    haxe --cwd examples/graphs/ build.hxml
-    haxe --cwd examples/hello/ build.hxml
+    - haxe --cwd examples/bars/ build.hxml
+    - haxe --cwd examples/black_and_red/ build.hxml
+    - haxe --cwd examples/graphs/ build.hxml
+    - haxe --cwd examples/hello/ build.hxml
