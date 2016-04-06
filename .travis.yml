@@ -1,0 +1,34 @@
+
+language: haxe
+
+os:
+    - linux
+    - osx
+
+haxe:
+  - "3.2.1"
+  - development
+
+addons:
+  apt:
+    packages:
+      # C++
+      - gcc-multilib
+      - g++-multilib
+
+install:
+    - if [ "${TRAVIS_HAXE_VERSION}" = "development" ]; then
+        haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp.git;
+        pushd $(haxelib path hxcpp | head -1);
+        pushd tools/hxcpp; haxe compile.hxml; popd;
+        pushd project; neko build.n; popd;
+        popd;
+    else
+        haxelib install hxcpp;
+    fi
+
+script:
+    haxe --cwd examples/bars/ build.hxml
+    haxe --cwd examples/black_and_red/ build.hxml
+    haxe --cwd examples/graphs/ build.hxml
+    haxe --cwd examples/hello/ build.hxml
