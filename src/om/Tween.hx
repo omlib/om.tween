@@ -1,12 +1,12 @@
 package om;
 
-import om.Time.now;
+import om.Time;
 import om.tween.Interpolation;
 import om.easing.Linear;
 
 class Tween {
 
-	static var list = new Array<Tween>();
+	public static var list = new Array<Tween>();
 
 	public static inline function add( tween : Tween )
 		list.push( tween );
@@ -39,7 +39,7 @@ class Tween {
 	/** */
 	public var isPlaying(default,null) = false;
 
-	/** */
+	/** Duration in ms */
 	public var duration(default,null) : Null<Float>;
 
 	/** */
@@ -52,8 +52,10 @@ class Tween {
 	var _repeat = 0;
 	var _yoyo = false;
 	var _reversed = false;
+
 	var _delayTime = 0.0;
 	var _startTime = 0.0;
+
 	var _easingFunction = Linear.None;
 	var _interpolationFunction = Interpolation.linear;
 	var _chainedTweens = new Array<Tween>();
@@ -68,14 +70,16 @@ class Tween {
 		this.object = object;
 	}
 
-	public function start( time = 0.0 ) : Tween {
+	public function start( time : Null<Float> = 0.0 ) : Tween {
 
 		Tween.add( this );
 
 		isPlaying = true;
 		_onStartCallbackFired = false;
 
-		_startTime = time + _delayTime;
+		_startTime = Time.now() + _delayTime;
+		//_startTime = time + _delayTime;
+		//_startTime = (time != null) ? time : now();
 
 		for( prop in Reflect.fields( _valuesEnd ) ) {
 
@@ -109,21 +113,26 @@ class Tween {
 	}
 
 	public function stop() : Tween {
+
 		if( !isPlaying )
 			return this;
+
 		Tween.remove( this );
 		isPlaying = false;
+
 		if( _onStopCallback != null ) _onStopCallback();
+
 		return stopChainedTweens();
 	}
 
 	public function stopChainedTweens() : Tween {
-		for( t in _chainedTweens ) t.stop();
+		for( t in _chainedTweens )
+			t.stop();
 		return this;
 	}
 
 	public function to( props : Dynamic, duration = 1000.0 ) : Tween {
-		_valuesEnd = props;
+		this._valuesEnd = props;
 		this.duration = duration;
 		return this;
 	}
@@ -191,16 +200,20 @@ class Tween {
 			_onStartCallbackFired = true;
 		}
 
-		var elapsed = ( time - _startTime ) / duration;
+		var elapsed = (time - _startTime) / duration;
+		//trace(time+":"+_startTime+":"+duration);
+		//trace(elapsed);
 		elapsed = elapsed > 1 ? 1 : elapsed;
 
 		var value = _easingFunction( elapsed );
 
 		for( f in Reflect.fields( _valuesEnd ) ) {
+
 			//var f = Reflect.field( f, _valuesEnd );
 			var start : Null<Int> = Reflect.field( _valuesStart, f );
 			if( start == null ) start = 0;
 			var end = Reflect.field( _valuesEnd, f );
+
 			Reflect.setField( object, f, start + (end - start) * value );
 			/*
 			if( Std.is( end, Array ) ) {
