@@ -2,7 +2,7 @@
 import nme.Lib;
 import nme.display.Sprite;
 import nme.events.Event;
-import om.Time.now;
+import om.Time;
 import om.Tween;
 import om.easing.*;
 
@@ -19,7 +19,7 @@ class App {
 	}
 
 	static function update(_) {
-		var time = now();
+		var time = Time.now();
 		Tween.step( time );
 		animate();
     }
@@ -50,7 +50,7 @@ class App {
 		tween.chain( [tweenBack] );
 		tweenBack.chain( [tween] );
 
-		startTime = now();
+		startTime = Time.now();
 		Lib.current.stage.addEventListener( Event.ENTER_FRAME, update );
 
 		tween.start();

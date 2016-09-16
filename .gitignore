@@ -5,4 +5,4 @@ doc/
 test/build/
 test/unit.*
 haxedoc.xml
-TODO.md
+TODO*

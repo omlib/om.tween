@@ -1,5 +1,5 @@
 --no-output
--neko x
+-js x
 -xml haxedoc.xml
 -cp src
 -cp ../om.core/src

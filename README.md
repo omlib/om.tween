@@ -16,4 +16,4 @@ new Tween( target )
 See [examples/](examples/) for more complex usage.
 
 ## Easing
-![EasingGraphs](easing-graphs.png)
+![EasingGraphs](easings.png)
