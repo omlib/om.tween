@@ -1,12 +1,12 @@
 package om;
 
 import om.Time;
-import om.tween.Interpolation;
-import om.easing.Linear;
+import om.ease.Linear;
+import om.math.Interpolation;
 
 class Tween {
 
-	public static var list = new Array<Tween>();
+	static var list = new Array<Tween>();
 
 	public static inline function add( tween : Tween )
 		list.push( tween );
@@ -188,8 +188,6 @@ class Tween {
 	}
 
 	public function update( time : Float ) : Bool {
-
-		//var property;
 
 		if( time < _startTime )
 			return true;
