@@ -2,7 +2,6 @@ _*
 examples/*/bin/
 examples/*/*.js*
 doc/
-test/build/
-test/unit*
+test/bin/
 haxedoc.xml
 TODO*
