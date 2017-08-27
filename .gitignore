@@ -3,6 +3,6 @@ examples/*/bin/
 examples/*/*.js*
 doc/
 test/build/
-test/unit.*
+test/unit*
 haxedoc.xml
 TODO*

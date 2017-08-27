@@ -1,7 +1,7 @@
 
-# OM|TWEEN [![Build Status](https://travis-ci.org/tong/om.tween.svg?branch=master)](https://travis-ci.org/tong/om.tween)
+# OM.TWEEN [![Build Status](https://travis-ci.org/tong/om.tween.svg?branch=master)](https://travis-ci.org/tong/om.tween)
 
-Simple tween engine.
+Tween engine.
 
 
 ## Usage
@@ -15,5 +15,5 @@ new Tween( target )
 ```
 See [examples/](examples/) for more complex usage.
 
-## Easing
+## Ease Methods
 ![EasingGraphs](easings.png)

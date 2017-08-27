@@ -5,5 +5,5 @@
 -cp ../om.core/src
 -D doc-gen
 --macro include('om.Tween')
---macro include('om.easing')
+--macro include('om.ease')
 --macro include('om.tween')

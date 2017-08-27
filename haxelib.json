@@ -7,8 +7,9 @@
     "license": "OM",
     "contributors": ["tong"],
     "releasenote": "See CHANGELOG.md",
-    "classPath" : "src/",
+    "classPath": "src/",
     "dependencies": {
-		"om.core":""
+		"om.core": "",
+		"om.ease": ""
 	}
 }
