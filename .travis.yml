@@ -2,18 +2,22 @@ language: haxe
 
 os:
     - linux
-    - osx
-
-sudo: false
 
 haxe:
     - "3.4.2"
     - development
 
+matrix:
+  allow_failures:
+    - haxe: development
+
+install:
+  - haxelib dev om.tween .
+
 before_script:
     - cd ..
-    - git clone https://github.com/tong/om.core.git
-    - git clone https://github.com/tong/om.ease.git
+    - haxelib git om.core https://github.com/tong/om.core
+    - haxelib git om.ease https://github.com/tong/om.ease
     - cd -
 
 script:
