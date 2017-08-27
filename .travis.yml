@@ -2,13 +2,17 @@ language: haxe
 
 os:
     - linux
-    - osx
-
-sudo: false
 
 haxe:
     - "3.4.2"
     - development
+
+matrix:
+  allow_failures:
+    - haxe: development
+
+install:
+  - haxelib dev om.tween .
 
 before_script:
     - cd ..
