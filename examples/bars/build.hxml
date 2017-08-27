@@ -1,7 +1,6 @@
 -js app.js
 -main App
--cp ../../src
--cp ../../../om.core/src
+-lib om.tween
 -debug
 -dce full
 -D analyzer

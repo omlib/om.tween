@@ -1,15 +1,11 @@
 
 import js.Browser.document;
 import js.Browser.window;
+import om.Time;
 import om.Tween;
-import om.easing.*;
+import om.ease.*;
 
 class App {
-
-	static function update( time : Float ) {
-		window.requestAnimationFrame( update );
-		Tween.step( time );
-	}
 
 	static function main() {
 
@@ -56,6 +52,14 @@ class App {
 			}
 			document.body.appendChild( table );
 
+			var lastFrameTime = Time.stamp();
+			function update( time : Float ) {
+				window.requestAnimationFrame( update );
+				var now = Time.stamp();
+				var delta = now - lastFrameTime;
+				Tween.step( delta );
+				lastFrameTime = now;
+			}
 			window.requestAnimationFrame( update );
 		}
 	}

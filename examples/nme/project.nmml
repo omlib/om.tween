@@ -25,6 +25,8 @@
   <classpath name="../../../om.core/src" />
 
   <haxelib name="nme" />
+  <haxelib name="om.tween" />
+  <haxelib name="om.loop" />
 
   <ndll name="std" />
   <ndll name="regexp" />

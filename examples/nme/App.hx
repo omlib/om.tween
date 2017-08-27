@@ -4,11 +4,12 @@ import nme.display.Sprite;
 import nme.events.Event;
 import om.Time;
 import om.Tween;
-import om.easing.*;
+import om.ease.*;
 
 class App {
 
 	static var startTime : Float;
+	static var lastFrameTime : Float;
 	static var target : Sprite;
 	static var position : Dynamic;
 
@@ -18,9 +19,16 @@ class App {
 		target.rotation = Std.int( position.rotation );
 	}
 
-	static function update(_) {
+	static function update( delta : Float ) {
+		/*
 		var time = Time.now();
-		Tween.step( time );
+		var delta = time - lastFrameTime;
+		Tween.step( delta );
+		//animate();
+		lastFrameTime = time;
+		*/
+		Tween.step( delta );
+
 		animate();
     }
 
@@ -51,7 +59,10 @@ class App {
 		tweenBack.chain( [tween] );
 
 		startTime = Time.now();
-		Lib.current.stage.addEventListener( Event.ENTER_FRAME, update );
+		//lastFrameTime = startTime;
+		//Lib.current.stage.addEventListener( Event.ENTER_FRAME, update );
+		var loop = new om.Loop();
+		loop.start( update );
 
 		tween.start();
 	}

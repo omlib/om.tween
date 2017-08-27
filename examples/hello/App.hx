@@ -2,13 +2,15 @@
 import js.Browser.document;
 import js.Browser.window;
 import js.html.Element;
+import om.Time;
 import om.Tween;
-import om.easing.*;
+import om.ease.*;
 
 class App {
 
 	static var target : Element;
 	static var position : Dynamic;
+	static var lastFrameTime : Float;
 
 	static function animate() {
 		target.style.left = position.x + 'px';
@@ -18,7 +20,10 @@ class App {
 
 	static function update( time : Float ) {
 		window.requestAnimationFrame( update );
-		Tween.step( time );
+		var now = Time.stamp();
+		var delta = now - lastFrameTime;
+		Tween.step( delta );
+		lastFrameTime = now;
 	}
 
 	static function main() {
@@ -43,6 +48,7 @@ class App {
 
 			tween.start();
 
+			lastFrameTime = Time.stamp();
 			window.requestAnimationFrame( update );
 		}
 	}

@@ -6,14 +6,9 @@ import js.html.SpanElement;
 import js.html.CanvasElement;
 import js.html.CanvasRenderingContext2D;
 import om.Tween;
-import om.easing.*;
+import om.ease.*;
 
 class App {
-
-    static function update( time : Float ) {
-        window.requestAnimationFrame( update );
-        Tween.step( time );
-    }
 
     static function main() {
 
@@ -41,6 +36,14 @@ class App {
                 }
             }
 
+            var lastFrameTime = om.Time.stamp();
+            function update( time : Float ) {
+                window.requestAnimationFrame( update );
+                var now = om.Time.stamp();
+                var delta = now - lastFrameTime;
+                Tween.step( delta );
+                lastFrameTime = now;
+            }
             window.requestAnimationFrame( update );
 
             /*
