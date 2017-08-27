@@ -12,6 +12,7 @@ matrix:
     - haxe: development
 
 install:
+  - haxelib install thx.semver
   - haxelib dev om.tween .
 
 before_script:
