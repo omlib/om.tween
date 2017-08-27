@@ -16,8 +16,8 @@ install:
 
 before_script:
     - cd ..
-    - haxelib git om.core https://github.com/tong/om.core
-    - haxelib git om.ease https://github.com/tong/om.ease
+    - git clone https://github.com/tong/om.core.git && haxelib dev om.core om.core/
+    - git clone https://github.com/tong/om.ease.git && haxelib dev om.ease om.ease/
     - cd -
 
 script:
