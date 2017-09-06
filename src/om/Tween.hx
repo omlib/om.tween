@@ -6,10 +6,7 @@ import om.math.Interpolation;
 
 class Tween {
 
-	static var list = new Array<Tween>();
-
-    public static inline function getAll() : Array<Tween>
-		return list;
+	public static var list(default,null) = new Array<Tween>();
 
 	public static inline function add( tween : Tween )
 		list.push( tween );
@@ -161,6 +158,11 @@ class Tween {
 
 	public function onStop( f : Void->Void ) : Tween {
 		_onStopCallback = f;
+		return this;
+	}
+
+	public function clearHandlers() : Tween {
+		_onStartCallback = _onCompleteCallback = _onStopCallback = null;
 		return this;
 	}
 
