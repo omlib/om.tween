@@ -1,0 +1,57 @@
+--no-output
+-lib om.tween
+-dce no
+-D doc
+-D doc-gen
+--macro include('om.Tween')
+--macro include('om.tween')
+--each
+
+--next
+-cpp x
+-xml doc/cpp.xml
+
+--next
+-cs x
+-xml doc/cs.xml
+
+--next
+-hl x
+-xml doc/hl.xml
+
+--next
+-java x
+-xml doc/java.xml
+
+--next
+-js x
+-xml doc/js.xml
+
+--next
+-js x
+-xml doc/nodejs.xml
+-lib hxnodejs
+
+--next
+-lua x
+-xml doc/lua.xml
+
+--next
+-neko x
+-xml doc/neko.xml
+
+--next
+-python x
+-xml doc/python.xml
+
+--next
+-php x
+-xml doc/php.xml
+
+--next
+-swf x
+-xml doc/swf.xml
+
+#--next
+#-cmd haxelib run dox -o doc/ -i doc/xml --title om.tween -D version 3.3.0 -D source-path https://github.com/tong/om.tween/tree/master/src
+#-cmd haxelib run dox -o doc/ -i doc -in om.* -D version 3.3.0 -D source-path https://github.com/tong/om.tween/tree/master/src -theme ~/dev/lib/dox-theme-void/void
