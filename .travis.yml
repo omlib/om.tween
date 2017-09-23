@@ -12,8 +12,12 @@ matrix:
         - haxe: development
 
 install:
-    - haxelib install thx.semver
+    - haxelib install hashlink
+    - haxelib install hxcpp
+    - haxelib install hxcs
+    - haxelib install hxjava
     - haxelib install hxnodejs
+    - haxelib install thx.semver
     - haxelib dev om.tween .
 
 before_script:
