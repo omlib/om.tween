@@ -1,7 +1,7 @@
 {
     "name": "om.tween",
-    "version": "0.1.0",
-    "description": "Tween library",
+    "version": "0.0.0",
+    "description": "Tween engine",
     "tags": ["om","tween"],
     "url": "https://github.com/tong/om.tween",
     "license": "OM",

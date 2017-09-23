@@ -1,7 +1,6 @@
 --no-output
 -lib om.tween
 -dce no
--D doc
 -D doc-gen
 --macro include('om.Tween')
 --macro include('om.tween')

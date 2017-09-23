@@ -1,7 +1,7 @@
 _*
 examples/*/bin/
 examples/*/*.js*
-doc/*.xml
+doc/
 test/bin/
 haxedoc.xml
 TODO*
