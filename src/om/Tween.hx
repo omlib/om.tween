@@ -161,7 +161,7 @@ class Tween {
 		return this;
 	}
 
-	public function clearHandlers() : Tween {
+	public function clearAllHandlers() : Tween {
 		_onStartCallback = _onCompleteCallback = _onStopCallback = null;
 		return this;
 	}
