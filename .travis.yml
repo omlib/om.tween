@@ -14,9 +14,13 @@ matrix:
 install:
     - haxelib install thx.semver
     - haxelib install hxnodejs
-    - haxelib git om.core https://github.com/tong/om.core
-    - haxelib git om.ease https://github.com/tong/om.ease
     - haxelib dev om.tween .
+
+before_script:
+    - cd ..
+    - git clone https://github.com/tong/om.core.git && haxelib dev om.core om.core/
+    - git clone https://github.com/tong/om.ease.git && haxelib dev om.ease om.ease/
+    - cd -
 
 script:
     - haxe --cwd examples/bars/ build.hxml
